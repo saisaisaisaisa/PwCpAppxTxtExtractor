@@ -102,17 +102,17 @@ async def start(bot, message):
 #    except:
 #        pass
         
-async def fetch_pwwp_data(session: aiohttp.ClientSession, url: str, headers: Dict = None, params: Dict = None, data: Dict = None, method: str = 'GET') -> Any:
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            async with session.request(method, url, headers=headers, params=params, json=data) as response:
-                response.raise_for_status()
-                return await response.json()
-        except aiohttp.ClientError as e:
-            logging.error(f"Attempt {attempt + 1} failed: aiohttp error fetching {url}: {e}")
-        except Exception as e:
-            logging.exception(f"Attempt {attempt + 1} failed: Unexpected error fetching {url}: {e}")
+async def fetch_pwwp_data(method, url, headers=None, params=None, data=None):
+import logging
+logger = logging.getLogger()
+
+for attempt in range(3): # Try up to 3 times
+try:
+async with aiohttp.ClientSession() as session:
+async with session.request(method, url, headers=headers, params=params, json=data) as response:
+return await response.json()
+except Exception as e:
+logger.error(f"Attempt {attempt + 1} failed: Unexpected error fetching {url}: {e}")
 
         if attempt < max_retries - 1:
             await asyncio.sleep(90 ** attempt)
