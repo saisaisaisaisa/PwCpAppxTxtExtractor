@@ -102,8 +102,10 @@ async def start(bot, message):
 #    except:
 #        pass
         
-async def fetch_pwwp_data(method, url, headers=None, params=None, data=None):
 import logging
+import aiohttp
+
+async def fetch_pwwp_data(method, url, headers=None, params=None, data=None):
 logger = logging.getLogger()
 
 for attempt in range(3): # Try up to 3 times
